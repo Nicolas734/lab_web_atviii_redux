@@ -32,13 +32,13 @@ const slice = createSlice({
 export const loadCity =
     (name: string): AppThunk<void> =>
         async (dispatch, getState) => {
-            const res = await listCities(name);
             dispatch(setCity({
                 status: "loading",
                 id:"",
                 name:"",
                 uf:""
             }))
+            const res = await listCities(name);
             console.log(res)
             laodForecast('1')
             dispatch(setCity(res))
