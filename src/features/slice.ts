@@ -42,13 +42,14 @@ export const loadCity =
             console.log(res)
             laodForecast('1')
             dispatch(setCity(res))
-            const previsions = await weatherForest(res.id);
-            console.log(previsions)
             dispatch(setForecast({
                     status: "loading",
                     updated: "",
                     forecasts: []
                 }))
+            const previsions = await weatherForest(res.id);
+            console.log(previsions)
+            laodForecast('1')
             dispatch(setForecast(previsions))
     };
 
