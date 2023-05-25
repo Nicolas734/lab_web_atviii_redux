@@ -14,17 +14,6 @@ export default function Main() {
   const city: CityProps = useSelector( (state:RootState) => state.city);
   const forecasts: WeatherForecastProps = useSelector((state:RootState) => state.forecasts);
 
-  // const forecasts:WeatherForecastProps = {
-  //   status: "done",
-  //   updated: "22/05/2023",
-  //   forecasts: [
-  //     { date: "23/05/2023", max: "26", min: "14", iuv: "5.0" },
-  //     { date: "24/05/2023", max: "26", min: "14", iuv: "5.0" },
-  //     { date: "25/05/2023", max: "26", min: "15", iuv: "5.0" },
-  //     { date: "26/05/2023", max: "26", min: "15", iuv: "5.0" },
-  //   ],
-  // };
-
   const findPrevisionsByCity = async () => {
     dispatch(loadCity(replace(input)))
   }
