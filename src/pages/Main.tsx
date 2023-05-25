@@ -14,11 +14,13 @@ export default function Main() {
   const city: CityProps = useSelector( (state:RootState) => state.city);
   const forecasts: WeatherForecastProps = useSelector((state:RootState) => state.forecasts);
 
+
   const findPrevisionsByCity = async () => {
     const inputValue = replace(input);
     await dispatch(loadCity(inputValue));
     await dispatch(loadForecast());
   }
+
 
   return (
     <WrapperSld>
