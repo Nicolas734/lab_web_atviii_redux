@@ -1,29 +1,29 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { CityProps, ForecastProps, WeatherForecastProps } from "../types";
+import { CityProps, ForecastProps, WeatherForecastProps, WeatherProps } from "../types";
 import { AppThunk } from "./store";
 import { listCities, weatherForest } from "../services/Weather";
 
 
 const slice = createSlice({
-    name:"weather",
-    initialState:{
-        city:{
+    name: "weather",
+    initialState: {
+        city: {
             status: "empty",
-            id:"",
-            name:"",
-            uf:""
+            id: "",
+            name: "",
+            uf: ""
         } as CityProps,
-        forecasts:{
+        forecasts: {
             status: "empty",
             updated: "",
             forecasts: [] as ForecastProps[]
-        } as WeatherForecastProps ,
-    },
-    reducers:{
-        setCity: (state, action: PayloadAction<CityProps>)=>{
+        } as WeatherForecastProps,
+    } as WeatherProps,
+    reducers: {
+        setCity: (state, action: PayloadAction<CityProps>) => {
             state.city = action.payload
         },
-        setForecast: (state, action:  PayloadAction<WeatherForecastProps>) => {
+        setForecast: (state, action: PayloadAction<WeatherForecastProps>) => {
             state.forecasts = action.payload;
         }
     }
@@ -34,41 +34,28 @@ export const loadCity =
         async (dispatch, getState) => {
             dispatch(setCity({
                 status: "loading",
-                id:"",
-                name:"",
-                uf:""
-            }))
+                id: "",
+                name: "",
+                uf: ""
+            }));
             const res = await listCities(name);
-            console.log(res)
-            laodForecast('1')
-            dispatch(setCity(res))
-            dispatch(setForecast({
-                    status: "loading",
-                    updated: "",
-                    forecasts: []
-                }))
-            const previsions = await weatherForest(res.id);
-            console.log(previsions)
-            laodForecast('1')
-            dispatch(setForecast(previsions))
-    };
+            dispatch(setCity(res));
+        };
 
 
-const laodForecast = (id: string): AppThunk<void> => 
+export const loadForecast = (): AppThunk<void> =>
     async (dispatch, getStat) => {
-        const previsions = await weatherForest(id);
+        const res = getStat();
         dispatch(setForecast({
-                status: "loading",
-                updated: "",
-                forecasts: []
-            }))
-        dispatch(setForecast(previsions))
-
+            status: "loading",
+            updated: "",
+            forecasts: []
+        }));
+        const forecasts = await weatherForest(res.city.id);
+        dispatch(setForecast(forecasts));
     }
 
-
-
-export const {setCity} = slice.actions;
-export const {setForecast} = slice.actions;
+export const { setCity } = slice.actions;
+export const { setForecast } = slice.actions;
 
 export default slice.reducer;

@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { Input, City, Forecast } from "../components";
-import { CityProps, ForecastProps, WeatherForecastProps } from "../types";
-import { loadCity } from "../features/slice";
+import { CityProps, WeatherForecastProps } from "../types";
+import { loadCity, loadForecast } from "../features/slice";
 import { AppDispatch, RootState } from "../features/store";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -15,7 +15,9 @@ export default function Main() {
   const forecasts: WeatherForecastProps = useSelector((state:RootState) => state.forecasts);
 
   const findPrevisionsByCity = async () => {
-    dispatch(loadCity(replace(input)))
+    const inputValue = replace(input);
+    await dispatch(loadCity(inputValue));
+    await dispatch(loadForecast());
   }
 
   return (
@@ -24,7 +26,7 @@ export default function Main() {
       <Input
         value={input}
         set={setInput}
-        operation={() => dispatch(loadCity(replace(input)))}
+        operation={findPrevisionsByCity}
       />
       {city && <City {...city} />}
       {forecasts && <Forecast {...forecasts} />}
