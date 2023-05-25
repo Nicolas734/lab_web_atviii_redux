@@ -1,32 +1,33 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { Input, City, Forecast } from "../components";
-import { CityProps, WeatherForecastProps } from "../types";
+import { CityProps, ForecastProps, WeatherForecastProps } from "../types";
 import { loadCity } from "../features/slice";
 import { AppDispatch, RootState } from "../features/store";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 
+
 export default function Main() {
   const dispatch = useDispatch<AppDispatch>();
   const [input, setInput] = useState("São José dos Campos");
   const city: CityProps = useSelector( (state:RootState) => state.city);
-  // const city: CityProps = {
+  const forecasts: WeatherForecastProps = useSelector((state:RootState) => state.forecasts);
+
+  // const forecasts:WeatherForecastProps = {
   //   status: "done",
-  //   id: "4963",
-  //   name: "São José dos Campos",
-  //   uf: "SP",
+  //   updated: "22/05/2023",
+  //   forecasts: [
+  //     { date: "23/05/2023", max: "26", min: "14", iuv: "5.0" },
+  //     { date: "24/05/2023", max: "26", min: "14", iuv: "5.0" },
+  //     { date: "25/05/2023", max: "26", min: "15", iuv: "5.0" },
+  //     { date: "26/05/2023", max: "26", min: "15", iuv: "5.0" },
+  //   ],
   // };
-  const forecasts:WeatherForecastProps = {
-    status: "done",
-    updated: "22/05/2023",
-    forecasts: [
-      { date: "23/05/2023", max: "26", min: "14", iuv: "5.0" },
-      { date: "24/05/2023", max: "26", min: "14", iuv: "5.0" },
-      { date: "25/05/2023", max: "26", min: "15", iuv: "5.0" },
-      { date: "26/05/2023", max: "26", min: "15", iuv: "5.0" },
-    ],
-  };
+
+  const findPrevisionsByCity = async () => {
+    dispatch(loadCity(replace(input)))
+  }
 
   return (
     <WrapperSld>

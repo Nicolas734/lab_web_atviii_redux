@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { CityProps } from "../types";
+import { CityProps, ForecastProps, WeatherForecastProps } from "../types";
 import { AppThunk } from "./store";
-import { listCities } from "../services/Weather";
+import { listCities, weatherForest } from "../services/Weather";
 
 
 const slice = createSlice({
@@ -13,10 +13,18 @@ const slice = createSlice({
             name:"",
             uf:""
         } as CityProps,
+        forecasts:{
+            status: "empty",
+            updated: "",
+            forecasts: [] as ForecastProps[]
+        } as WeatherForecastProps ,
     },
     reducers:{
         setCity: (state, action: PayloadAction<CityProps>)=>{
-             state.city = action.payload
+            state.city = action.payload
+        },
+        setForecast: (state, action:  PayloadAction<WeatherForecastProps>) => {
+            state.forecasts = action.payload;
         }
     }
 });
@@ -24,18 +32,42 @@ const slice = createSlice({
 export const loadCity =
     (name: string): AppThunk<void> =>
         async (dispatch, getState) => {
-            const r = await listCities(name);
+            const res = await listCities(name);
             dispatch(setCity({
                 status: "loading",
                 id:"",
                 name:"",
                 uf:""
             }))
-            console.log(r)
-            dispatch(setCity(r))
+            console.log(res)
+            laodForecast('1')
+            dispatch(setCity(res))
+            const previsions = await weatherForest(res.id);
+            console.log(previsions)
+            dispatch(setForecast({
+                    status: "loading",
+                    updated: "",
+                    forecasts: []
+                }))
+            dispatch(setForecast(previsions))
     };
 
 
+const laodForecast = (id: string): AppThunk<void> => 
+    async (dispatch, getStat) => {
+        const previsions = await weatherForest(id);
+        dispatch(setForecast({
+                status: "loading",
+                updated: "",
+                forecasts: []
+            }))
+        dispatch(setForecast(previsions))
+
+    }
+
+
+
 export const {setCity} = slice.actions;
+export const {setForecast} = slice.actions;
 
 export default slice.reducer;
